@@ -71,6 +71,6 @@ pipeline{
     post{
       success {
           mail to:  "chaglare@gmail.com", subject: "job", body: "job completed"
+        }
     }
-}
 }
