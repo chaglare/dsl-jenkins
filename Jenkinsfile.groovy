@@ -18,6 +18,7 @@ pipeline{
                     sh "pwd"
                     sh "wget https://releases.hashicorp.com/terraform/0.12.7/terraform_0.12.7_freebsd_amd64.zip"
                     sh "unzip terraform_0.12.7_freebsd_amd64.zip"
+                    sh "sudo mv terraform /bin"
                 }
             }
         }
