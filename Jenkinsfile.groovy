@@ -15,18 +15,19 @@ pipeline{
         stage("Download Terraform"){
             steps{
                 ws("tmp/"){
-                    sh "pwd"
-                    def exists fileExists 'terraform_0.12.7_freebsd_amd64.zip'
-                    if (exists){
-                        sh "unzip -o terraform_0.12.7_freebsd_amd64.zip"
+                    script {
+                        def exists = fileExists 'terraform_0.12.7_linux_amd64.zip'
+                        if (exists) {
+                            sh "unzip -o terraform_0.12.7_linux_amd64.zip"
+                            sh "mv terraform /bin"
+                            sh "terraform version"
+                        } else {
+                            sh "wget https://releases.hashicorp.com/terraform/0.12.7/terraform_0.12.7_linux_amd64.zip"
+                            sh "unzip -o terraform_0.12.7_linux_amd64.zip"
+                            sh "mv terraform /bin"
+                            sh "terraform version"
+                        }
                     }
-                    else {
-                        sh "wget https://releases.hashicorp.com/terraform/0.12.7/terraform_0.12.7_freebsd_amd64.zip"
-                    }                    
-                    sh "wget https://releases.hashicorp.com/terraform/0.12.7/terraform_0.12.7_freebsd_amd64.zip"
-                    sh "unzip terraform_0.12.7_freebsd_amd64.zip"
-                    sh "sudo mv terraform /bin"
-                    sh "terraform version"
                 }
             }
         }
