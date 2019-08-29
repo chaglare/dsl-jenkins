@@ -6,7 +6,7 @@ pipeline{
                 sh '''
                 set +xe
                 echo Hello
-                ech Error
+                ech  Error
                 sudo yum install httpd wget unzip -y
                 ping -c 4 google.com
                 '''
@@ -16,14 +16,14 @@ pipeline{
             steps{
                 ws("tmp/"){
                     script {
-                        def exists = fileExists 'terraform_0.11.9_linux_amd64.zip'
+                        def exists = fileExists 'terraform_0.12.7_linux_amd64.zip'
                         if (exists) {
-                            sh "unzip -o terraform_0.11.9_linux_amd64.zip"
+                            sh "unzip -o terraform_0.12.7_linux_amd64.zip"
                             sh "sudo mv -f terraform /bin"
                             sh "terraform version"
                         } else {
-                            sh "wget https://releases.hashicorp.com/terraform/0.11.9/terraform_0.11.9_linux_amd64.zip"
-                            sh "unzip -o terraform_0.11.9_linux_amd64.zip"
+                            sh "wget https://releases.hashicorp.com/terraform/0.12.7/terraform_0.12.7_linux_amd64.zip"
+                            sh "unzip -o terraform_0.12.7_linux_amd64.zip"
                             sh "sudo mv -f terraform /bin"
                             sh "terraform version"
                         }
@@ -35,6 +35,7 @@ pipeline{
             steps{
                 ws("tmp/"){
                     writeFile text: "Test", file: "TestFile"
+                    sh "cat TestFile"
                 }
             }
         }
@@ -57,11 +58,6 @@ pipeline{
                 }
             }
         }
-        stage("Pull Repo"){
-            steps{
-                git("https://github.com/chaglare/packerdev.git")
-            }
-        }
         stage("Build Image"){
             steps{
                 //sh "packer build updated/updated.json"
@@ -75,9 +71,10 @@ pipeline{
                 }
             }
         }
-        stage("Terraform Init"){
+        stage("Build VPC "){
             steps{
                 ws("terraform/"){
+                    sh "terraform get"
                     sh "terraform init"
                 }
             }
@@ -88,8 +85,7 @@ pipeline{
             echo "Done"
         }
         failure {
-            mail to:  "chaglare@gmail.com", subject: "job", body: "job completed"
+            mail to:  "farrukhsadykov@gmail.com", subject: "job", body: "job completed"
         }
-          
     }
 }
