@@ -68,12 +68,17 @@ pipeline{
                 echo "Hello"
             }
         }
-        stage("Build VPC"){
+        stage("Clone VPC Repo"){
             steps{
                 ws("terraform/"){
                     git "https://github.com/chaglare/infrastructure.git"
-                    sh "pwd"
-                    sh "ls"
+                }
+            }
+        }
+        stage("Terraform Init"){
+            steps{
+                ws("terraform/"){
+                    sh "terraform init"
                 }
             }
         }
