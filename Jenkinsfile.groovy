@@ -1,5 +1,6 @@
 pipeline{
     agent any
+    properties([parameters([string(defaultValue: 'plan', description: 'plan/apply', name: 'USER_ACTION', trim: true)])])
     stages{
         stage("Run Command"){
             steps{
@@ -67,15 +68,28 @@ pipeline{
         stage("Clone VPC Repo"){
             steps{
                 ws("terraform/"){
-                    git "https://github.com/chaglare/infrastructure.git"
+                    git "https://github.com/farrukh90/infrastructure_april.git"
                 }
             }
         }
-        stage("Build VPC "){
+        stage("Get module"){
             steps{
                 ws("terraform/"){
                     sh "terraform get"
+                }
+            }
+        }
+        stage("initialize terraform"){
+            steps{
+                ws("terraform/"){
                     sh "terraform init"
+                }
+            }
+        }
+         stage("Build VPC "){
+            steps{
+                ws("terraform/"){
+                    sh "terraform  ${USER_ACTION} -var-file=dev.tfvars"
                 }
             }
         }
